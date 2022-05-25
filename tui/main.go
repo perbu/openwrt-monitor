@@ -1,29 +1,20 @@
-package main
+package tui
 
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/joho/godotenv"
 	"github.com/perbu/go-matrix/matrix"
 	"github.com/perbu/go-matrix/router"
-	"log"
-	"os"
 	"time"
 )
 
-func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("Error loading .env file")
-	}
-	r := router.New("http://10.0.0.1")
-	_ = r.GetTrafficStats() // get initial counters so the next call will be accurate
+func Run(r *router.Router) error {
 	p := tea.NewProgram(initialModel(r))
 	if err := p.Start(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
+		return fmt.Errorf("charm error: %w", err)
 	}
+	return nil
 }
 
 type model struct {
